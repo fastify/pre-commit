@@ -30,14 +30,14 @@
   "homepage": "https://github.com/observing/pre-commit",
   "license": "MIT",
   "dependencies": {
-    "cross-spawn": "^5.0.1",
-    "spawn-sync": "^1.0.15",
-    "which": "1.2.x"
+    "cross-spawn": "^7.0.3",
+    "spawn-sync": "^2.0.0",
+    "which": "^2.0.2"
   },
   "devDependencies": {
-    "assume": "~1.5.0",
+    "assume": "^2.3.0",
     "istanbul": "0.4.x",
-    "mocha": "~3.3.0",
+    "mocha": "^8.4.0",
     "pre-commit": "git://github.com/observing/pre-commit.git"
   }
 }
