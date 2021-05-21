@@ -8,7 +8,8 @@
     "example-pass": "echo \"This is the example hook, I exit with 0\" && exit 0",
     "install": "node install.js",
     "unit": "tap test.js",
-    "test": "npm run unit",
+    "lint": "standard",
+    "test": "npm run lint && npm run unit",
     "uninstall": "node uninstall.js"
   },
   "repository": {
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "pre-commit": "git://github.com/observing/pre-commit.git",
+    "standard": "^16.0.3",
     "tap": "^15.0.9"
   }
 }
