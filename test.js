@@ -1,257 +1,275 @@
-/* istanbul ignore next */
-describe('pre-commit', function () {
-  'use strict';
+'use strict'
+const t = require('tap')
+const Hook = require('./')
+const tty = require('tty')
+const ttySupportColor = tty.isatty(process.stdout.fd)
 
-  var assume = require('assume')
-    , Hook = require('./');
+t.test('pre-commit', function (t) {
+  t.plan(5)
 
-  it('is exported as a function', function () {
-    assume(Hook).is.a('function');
-  });
+  t.test('is exported as a function', function (t) {
+    t.plan(1)
+    t.strictSame(typeof Hook, 'function')
+  })
 
-  it('can be initialized without a `new` keyword', function () {
-    var hook = Hook(function () {}, {
+  t.test('can be initialized without a `new` keyword', function (t) {
+    t.plan(2)
+
+    const hook = Hook(function () {}, {
       ignorestatus: true
-    });
+    })
 
-    assume(hook).is.instanceOf(Hook);
-    assume(hook.parse).is.a('function');
-  });
+    t.strictSame(hook instanceof Hook, true)
+    t.strictSame(typeof hook.parse, 'function')
+  })
 
-  describe('#parse', function () {
-    var hook;
+  t.test('#parse', function (t) {
+    t.plan(7)
 
-    beforeEach(function () {
+    let hook
+
+    t.beforeEach(function () {
       hook = new Hook(function () {}, {
         ignorestatus: true
-      });
-    });
+      })
+    })
 
-    it('extracts configuration values from precommit.<flag>', function () {
+    t.test('extracts configuration values from precommit.<flag>', function (t) {
+      t.plan(3)
+
       hook.json = {
         'precommit.silent': true
-      };
+      }
 
-      assume(hook.silent).is.false();
+      t.strictSame(hook.silent, false)
 
-      hook.parse();
+      hook.parse()
 
-      assume(hook.config.silent).is.true();
-      assume(hook.silent).is.true();
-    });
+      t.strictSame(hook.config.silent, true)
+      t.strictSame(hook.silent, true)
+    })
 
-    it('extracts configuration values from pre-commit.<flag>', function () {
+    t.test('extracts configuration values from pre-commit.<flag>', function (t) {
+      t.plan(5)
+
       hook.json = {
         'pre-commit.silent': true,
         'pre-commit.colors': false
-      };
+      }
 
-      assume(hook.silent).is.false();
-      assume(hook.colors).is.true();
+      t.strictSame(hook.silent, false)
+      t.strictSame(hook.colors, ttySupportColor)
 
-      hook.parse();
+      hook.parse()
 
-      assume(hook.config.silent).is.true();
-      assume(hook.silent).is.true();
-      assume(hook.colors).is.false();
-    });
+      t.strictSame(hook.config.silent, true)
+      t.strictSame(hook.silent, true)
+      t.strictSame(hook.colors, false)
+    })
 
-    it('normalizes the `pre-commit` to an array', function () {
+    t.test('normalizes the `pre-commit` to an array', function (t) {
+      t.plan(2)
+
       hook.json = {
         'pre-commit': 'test, cows, moo'
-      };
+      }
 
-      hook.parse();
+      hook.parse()
 
-      assume(hook.config.run).is.length(3);
-      assume(hook.config.run).contains('test');
-      assume(hook.config.run).contains('cows');
-      assume(hook.config.run).contains('moo');
-    });
+      t.strictSame(hook.config.run.length, 3)
+      t.strictSame(hook.config.run, ['test', 'cows', 'moo'])
+    })
 
-    it('normalizes the `precommit` to an array', function () {
+    t.test('normalizes the `precommit` to an array', function (t) {
+      t.plan(2)
+
       hook.json = {
-        'precommit': 'test, cows, moo'
-      };
+        precommit: 'test, cows, moo'
+      }
 
-      hook.parse();
+      hook.parse()
 
-      assume(hook.config.run).is.length(3);
-      assume(hook.config.run).contains('test');
-      assume(hook.config.run).contains('cows');
-      assume(hook.config.run).contains('moo');
-    });
+      t.strictSame(hook.config.run.length, 3)
+      t.strictSame(hook.config.run, ['test', 'cows', 'moo'])
+    })
 
-    it('allows `pre-commit` object based syntax', function () {
+    t.test('allows `pre-commit` object based syntax', function (t) {
+      t.plan(4)
+
       hook.json = {
         'pre-commit': {
           run: 'test scripts go here',
           silent: true,
           colors: false
         }
-      };
+      }
 
-      hook.parse();
+      hook.parse()
 
-      assume(hook.config.run).is.length(4);
-      assume(hook.config.run).contains('test');
-      assume(hook.config.run).contains('scripts');
-      assume(hook.config.run).contains('go');
-      assume(hook.config.run).contains('here');
-      assume(hook.silent).is.true();
-      assume(hook.colors).is.false();
-    });
+      t.strictSame(hook.config.run.length, 4)
+      t.strictSame(hook.config.run, ['test', 'scripts', 'go', 'here'])
+      t.strictSame(hook.silent, true)
+      t.strictSame(hook.colors, false)
+    })
 
-    it('defaults to `test` if nothing is specified', function () {
+    t.test('defaults to `test` if nothing is specified', function (t) {
+      t.plan(2)
+
       hook.json = {
         scripts: {
           test: 'mocha test.js'
         }
-      };
+      }
 
-      hook.parse();
-      assume(hook.config.run).deep.equals(['test']);
-    });
+      hook.parse()
 
-    it('ignores the default npm.script.test placeholder', function () {
+      t.strictSame(hook.config.run.length, 1)
+      t.strictSame(hook.config.run, ['test'])
+    })
+
+    t.test('ignores the default npm.script.test placeholder', function (t) {
+      t.plan(1)
+
       hook.json = {
         scripts: {
           test: 'echo "Error: no test specified" && exit 1'
         }
-      };
+      }
 
-      hook.parse();
-      assume(hook.config.run).has.length(0);
-    });
-  });
+      hook.parse()
 
-  describe('#log', function () {
-    it('prefixes the logs with `pre-commit`', function (next) {
-      var hook = new Hook(function (code, lines) {
-        assume(code).equals(1);
-        assume(lines).is.a('array');
+      t.strictSame(typeof hook.config.run, 'undefined')
+    })
+  })
 
-        assume(lines[0]).includes('pre-commit');
-        assume(lines[1]).includes('pre-commit');
-        assume(lines[1]).includes('foo');
-        assume(lines).has.length(3);
+  t.test('#log', function (t) {
+    t.plan(6)
+
+    t.test('prefixes the logs with `pre-commit`', function (t) {
+      t.plan(9)
+      const hook = new Hook(function (code, lines) {
+        t.strictSame(code, 1)
+        t.strictSame(Array.isArray(lines), true)
+
+        t.strictSame(lines[0], 'pre-commit: ')
+        t.strictSame(lines[1], 'pre-commit: foo')
+        t.strictSame(lines[2], 'pre-commit: ')
+        t.strictSame(lines.length, 3)
 
         // color prefix check
         lines.forEach(function (line) {
-          assume(line).contains('\u001b');
-        });
+          t.strictSame(line.includes('\u001b'), ttySupportColor)
+        })
+      }, { ignorestatus: true })
 
-        next();
-      }, { ignorestatus: true });
+      hook.config.silent = true
+      hook.log(['foo'])
+    })
 
-      hook.config.silent = true;
-      hook.log(['foo']);
-    });
+    t.test('allows for a custom error code', function (t) {
+      t.plan(1)
 
-    it('allows for a custom error code', function (next) {
-      var hook = new Hook(function (code, lines) {
-        assume(code).equals(0);
+      const hook = new Hook(function (code, lines) {
+        t.strictSame(code, 0)
+      }, { ignorestatus: true })
 
-        next();
-      }, { ignorestatus: true });
+      hook.config.silent = true
+      hook.log(['foo'], 0)
+    })
 
-      hook.config.silent = true;
-      hook.log(['foo'], 0);
-    });
+    t.test('allows strings to be split \\n', function (t) {
+      t.plan(4)
 
-    it('allows strings to be split \\n', function (next) {
-      var hook = new Hook(function (code, lines) {
-        assume(code).equals(0);
+      const hook = new Hook(function (code, lines) {
+        t.strictSame(code, 0)
 
-        assume(lines).has.length(4);
-        assume(lines[1]).contains('foo');
-        assume(lines[2]).contains('bar');
+        t.strictSame(lines.length, 4)
+        t.strictSame(lines[1], 'pre-commit: foo')
+        t.strictSame(lines[2], 'pre-commit: bar')
+      }, { ignorestatus: true })
 
-        next();
-      }, { ignorestatus: true });
+      hook.config.silent = true
+      hook.log('foo\nbar', 0)
+    })
 
-      hook.config.silent = true;
-      hook.log('foo\nbar', 0);
-    });
+    t.test('does not output colors when configured to do so', function (t) {
+      t.plan(5)
 
-    it('does not output colors when configured to do so', function (next) {
-      var hook = new Hook(function (code, lines) {
-        assume(code).equals(0);
+      const hook = new Hook(function (code, lines) {
+        t.strictSame(code, 0)
 
         lines.forEach(function (line) {
-          assume(line).does.not.contain('\u001b');
-        });
+          t.strictSame(line.includes('\u001b'), false)
+        })
+      }, { ignorestatus: true })
 
-        next();
-      }, { ignorestatus: true });
+      hook.config.silent = true
+      hook.config.colors = false
 
-      hook.config.silent = true;
-      hook.config.colors = false;
+      hook.log('foo\nbar', 0)
+    })
 
-      hook.log('foo\nbar', 0);
-    });
+    t.test('output lines to stderr if error code 1', function (t) {
+      t.plan(4)
 
-    it('output lines to stderr if error code 1', function (next) {
-      var err = console.error;
-      next = assume.plan(4, next);
-
-      var hook = new Hook(function (code, lines) {
-        console.error = err;
-        next();
-      }, { ignorestatus: true });
+      const err = console.error
+      const hook = new Hook(function (code, lines) {
+        console.error = err
+      }, { ignorestatus: true })
 
       console.error = function (line) {
-        assume(line).contains('pre-commit: ');
-      };
+        t.strictSame(line.includes('pre-commit: '), true)
+      }
 
-      hook.config.colors = false;
-      hook.log('foo\nbar', 1);
-    });
+      hook.config.colors = false
+      hook.log('foo\nbar', 1)
+    })
 
-    it('output lines to stdout if error code 0', function (next) {
-      var log = console.log;
-      next = assume.plan(4, next);
+    t.test('output lines to stderr if error code 0', function (t) {
+      t.plan(4)
 
-      var hook = new Hook(function (code, lines) {
-        console.log = log;
-        next();
-      }, { ignorestatus: true });
+      const log = console.log
+      const hook = new Hook(function (code, lines) {
+        console.log = log
+      }, { ignorestatus: true })
 
       console.log = function (line) {
-        assume(line).contains('pre-commit: ');
-      };
+        t.strictSame(line.includes('pre-commit: '), true)
+      }
 
-      hook.config.colors = false;
-      hook.log('foo\nbar', 0);
-    });
-  });
+      hook.config.colors = false
+      hook.log('foo\nbar', 0)
+    })
+  })
 
-  describe('#run', function () {
-    it('runs the specified scripts and exit with 0 on no error', function (next) {
-      var hook = new Hook(function (code, lines) {
-        assume(code).equals(0);
-        assume(lines).is.undefined();
+  t.test('#run', function (t) {
+    t.plan(2)
 
-        next();
-      }, { ignorestatus: true });
+    t.test('runs the specified scripts and exit with 0 on no error', function (t) {
+      t.plan(2)
 
-      hook.config.run = ['example-pass'];
-      hook.run();
-    });
+      const hook = new Hook(function (code, lines) {
+        t.strictSame(code, 0)
+        t.strictSame(typeof lines, 'undefined')
+      }, { ignorestatus: true })
 
-    it('runs the specified test and exits with 1 on error', function (next) {
-      var hook = new Hook(function (code, lines) {
-        assume(code).equals(1);
+      hook.config.run = ['example-pass']
+      hook.run()
+    })
 
-        assume(lines).is.a('array');
-        assume(lines[1]).contains('`example-fail`');
-        assume(lines[2]).contains('code (1)');
+    t.test('runs the specified test and exits with 1 on error', function (t) {
+      t.plan(4)
 
-        next();
-      }, { ignorestatus: true });
+      const hook = new Hook(function (code, lines) {
+        t.strictSame(code, 1)
 
-      hook.config.run = ['example-fail'];
-      hook.run();
-    });
-  });
-});
+        t.strictSame(Array.isArray(lines), true)
+        t.strictSame(lines[1].includes('`example-fail`'), true)
+        t.strictSame(lines[2].includes('code (1)'), true)
+      }, { ignorestatus: true })
+
+      hook.config.run = ['example-fail']
+      hook.run()
+    })
+  })
+})
