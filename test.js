@@ -1,3 +1,4 @@
+'use strict'
 const t = require('tap')
 const Hook = require('./')
 const tty = require('tty')
