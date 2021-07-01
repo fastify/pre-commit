@@ -24,7 +24,7 @@ t.test('pre-commit', function (t) {
   })
 
   t.test('#parse', function (t) {
-    t.plan(7)
+    t.plan(8)
 
     let hook
 
@@ -139,6 +139,30 @@ t.test('pre-commit', function (t) {
       hook.parse()
 
       t.strictSame(typeof hook.config.run, 'undefined')
+    })
+
+    t.test('overrides the `pre-commit` config property in package.json with the config inside pre-commit.json if it exists', function (t) {
+      t.plan(1)
+
+      const fs = require('fs')
+      const { existsSync, readFileSync } = fs
+
+      fs.existsSync = function existsSyncMock () {
+        return true
+      }
+
+      fs.readFileSync = function readFileSyncMock () {
+        return Buffer.from(JSON.stringify({ run: ['lint', 'bench'] }))
+      }
+
+      hook = new Hook(function () {}, { ignorestatus: true })
+
+      // ----
+      t.same(hook.config.run, ['lint', 'bench'])
+
+      // Restoring mocks
+      fs.existsSync = existsSync
+      fs.readFileSync = readFileSync
     })
   })
 

@@ -6,6 +6,8 @@ const path = require('path')
 const util = require('util')
 const tty = require('tty')
 
+const fs = require('fs')
+
 /**
  * Representation of a hook runner.
  *
@@ -20,6 +22,7 @@ function Hook (fn, options) {
 
   this.options = options // Used for testing only. Ignore this. Don't touch.
   this.config = {} // pre-commit configuration from the `package.json`.
+  this.configFile = null // Actual contents of `pre-commit.json` if the user created one.
   this.json = {} // Actual content of the `package.json`.
   this.npm = '' // The location of the `npm` binary.
   this.git = '' // The location of the `git` binary.
@@ -77,7 +80,7 @@ Hook.prototype.exec = function exec (bin, args) {
  * @api private
  */
 Hook.prototype.parse = function parse () {
-  const pre = this.json['pre-commit'] || this.json.precommit
+  const pre = this.configFile || this.json['pre-commit'] || this.json.precommit
   const config = !Array.isArray(pre) && typeof pre === 'object' ? pre : {};
 
   ['silent', 'colors', 'template'].forEach(function each (flag) {
@@ -179,6 +182,19 @@ Hook.prototype.initialize = function initialize () {
 
   this.status = this.status.stdout.toString().trim()
   this.root = this.root.stdout.toString().trim()
+
+  if (fs.existsSync(path.join(this.root, 'pre-commit.json'))) {
+    let preCommitConfig
+
+    try {
+      const raw = fs.readFileSync(path.join(this.root, 'pre-commit.json'), 'utf-8').toString()
+      preCommitConfig = JSON.parse(raw)
+    } catch (err) {}
+
+    if (typeof preCommitConfig === 'object' && !Array.isArray(preCommitConfig)) {
+      this.configFile = preCommitConfig
+    }
+  }
 
   try {
     this.json = require(path.join(this.root, 'package.json'))
