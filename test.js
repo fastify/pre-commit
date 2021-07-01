@@ -4,6 +4,8 @@ const Hook = require('./')
 const tty = require('tty')
 const ttySupportColor = tty.isatty(process.stdout.fd)
 
+const proxyquire = require('proxyquire')
+
 t.test('pre-commit', function (t) {
   t.plan(5)
 
@@ -144,25 +146,22 @@ t.test('pre-commit', function (t) {
     t.test('overrides the `pre-commit` config property in package.json with the config inside pre-commit.json if it exists', function (t) {
       t.plan(1)
 
-      const fs = require('fs')
-      const { existsSync, readFileSync } = fs
-
-      fs.existsSync = function existsSyncMock () {
-        return true
-      }
-
-      fs.readFileSync = function readFileSyncMock () {
-        return Buffer.from(JSON.stringify({ run: ['lint', 'bench'] }))
-      }
+      const Hook = proxyquire('.', {
+        fs: {
+          existsSync () {
+            return true
+          },
+          readFileSync () {
+            const rawText = JSON.stringify({ run: ['lint', 'bench'] })
+            return Buffer.from(rawText)
+          }
+        }
+      })
 
       hook = new Hook(function () {}, { ignorestatus: true })
 
       // ----
       t.same(hook.config.run, ['lint', 'bench'])
-
-      // Restoring mocks
-      fs.existsSync = existsSync
-      fs.readFileSync = readFileSync
     })
   })
 
