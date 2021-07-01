@@ -183,11 +183,11 @@ Hook.prototype.initialize = function initialize () {
   this.status = this.status.stdout.toString().trim()
   this.root = this.root.stdout.toString().trim()
 
-  if (fs.existsSync(path.join(this.root, 'pre-commit.json'))) {
+  if (fs.existsSync(path.join(this.root, '.pre-commit.json'))) {
     let preCommitConfig
 
     try {
-      const raw = fs.readFileSync(path.join(this.root, 'pre-commit.json'), 'utf-8').toString()
+      const raw = fs.readFileSync(path.join(this.root, '.pre-commit.json'), 'utf-8').toString()
       preCommitConfig = JSON.parse(raw)
     } catch (err) {}
 
