@@ -37,7 +37,6 @@
   "license": "MIT",
   "dependencies": {
     "cross-spawn": "^7.0.3",
-    "spawn-sync": "^2.0.0",
     "which": "^2.0.2"
   },
   "devDependencies": {
