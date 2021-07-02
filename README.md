@@ -1,13 +1,6 @@
-# pre-commit
+# @fastify/pre-commit
 
-[![Version npm][version]](http://browsenpm.org/package/pre-commit)[![Build Status][build]](https://travis-ci.org/observing/pre-commit)[![Dependencies][david]](https://david-dm.org/observing/pre-commit)[![Coverage Status][cover]](https://coveralls.io/r/observing/pre-commit?branch=master)
-
-[version]: http://img.shields.io/npm/v/pre-commit.svg?style=flat-square
-[build]: http://img.shields.io/travis/observing/pre-commit/master.svg?style=flat-square
-[david]: https://img.shields.io/david/observing/pre-commit.svg?style=flat-square
-[cover]: http://img.shields.io/coveralls/observing/pre-commit/master.svg?style=flat-square
-
-**pre-commit** is a pre-commit hook installer for `git`. It will ensure that
+**@fastify/pre-commit** is a pre-commit hook installer for `git`. It will ensure that
 your `npm test` (or other specified scripts) passes before you can commit your
 changes. This all conveniently configured in your `package.json`.
 
@@ -16,12 +9,12 @@ But don't worry, you can still force a commit by telling `git` to skip the
 
 ### Installation
 
-It's advised to install the **pre-commit** module as a `devDependencies` in your
+It's advised to install the **@fastify/pre-commit** module as a `devDependencies` in your
 `package.json` as you only need this for development purposes. To install the
 module simply run:
 
 ```
-npm install --save-dev pre-commit
+npm install --save-dev @fastify/pre-commit
 ```
 
 To install it as `devDependency`. When this module is installed it will override
@@ -30,11 +23,11 @@ the existing `pre-commit` file in your `.git/hooks` folder. Existing
 
 ### Configuration
 
-`pre-commit` will try to run your `npm test` command in the root of the git
+`@fastify/pre-commit` will try to run your `npm test` command in the root of the git
 repository by default unless it's the default value that is set by the `npm
 init` script.
 
-But `pre-commit` is not limited to just running your `npm test`'s during the
+But `@fastify/pre-commit` is not limited to just running your `npm test`'s during the
 commit hook. It's also capable of running every other script that you've
 specified in your `package.json` "scripts" field. So before people commit you
 could ensure that:
@@ -127,7 +120,7 @@ Configuration can also be defined inside a standalone `.pre-commit.json` config 
 }
 ```
 
-The contents of `.pre-commit.json` will be used in the place of whatever was defined in the `pre-commit` 
+The contents of `.pre-commit.json` will be used in the place of whatever was defined in the `pre-commit`
 or `precommit` property inside `package.json`.
 
 It's all the same. Different styles so use what matches your project. To learn
@@ -142,3 +135,8 @@ http://githooks.com
 ### License
 
 MIT
+
+### Attribution
+
+The `@fastify/pre-commit` package is a fork of the original work found at
+https://github.com/observing/pre-commit.
