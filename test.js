@@ -26,7 +26,7 @@ t.test('pre-commit', function (t) {
   })
 
   t.test('#parse', function (t) {
-    t.plan(8)
+    t.plan(9)
 
     let hook
 
@@ -143,7 +143,7 @@ t.test('pre-commit', function (t) {
       t.strictSame(typeof hook.config.run, 'undefined')
     })
 
-    t.test('overrides the `pre-commit` config property in package.json with the config inside pre-commit.json if it exists', function (t) {
+    t.test('overrides the `pre-commit` config property in package.json with the config inside `.pre-commit.json` if it exists', function (t) {
       t.plan(1)
 
       const Hook = proxyquire('.', {
@@ -162,6 +162,40 @@ t.test('pre-commit', function (t) {
 
       // ----
       t.same(hook.config.run, ['lint', 'bench'])
+    })
+
+    t.test('should properly handle errors while trying to read and parse the contents of `.pre-commit.json`', function (t) {
+      t.plan(4)
+
+      let Hook = proxyquire('.', {
+        fs: {
+          existsSync () {
+            return true
+          },
+          readFileSync () {
+            throw new Error()
+          }
+        }
+      })
+
+      hook = new Hook(exit)
+
+      Hook = proxyquire('.', {
+        fs: {
+          existsSync () { return true },
+          readFileSync () {
+            return Buffer.from('{ "bad": [json }')
+          }
+        }
+      })
+
+      hook = new Hook(exit)
+
+      // *****************
+      function exit (code, lines) {
+        t.not(lines.length, 0)
+        t.equal(code, 1)
+      }
     })
   })
 

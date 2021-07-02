@@ -184,15 +184,17 @@ Hook.prototype.initialize = function initialize () {
   this.root = this.root.stdout.toString().trim()
 
   if (fs.existsSync(path.join(this.root, '.pre-commit.json'))) {
-    let preCommitConfig
+    let configFile
 
     try {
-      const raw = fs.readFileSync(path.join(this.root, '.pre-commit.json'), 'utf-8').toString()
-      preCommitConfig = JSON.parse(raw)
-    } catch (err) {}
+      const rawText = fs.readFileSync(path.join(this.root, '.pre-commit.json'), 'utf-8').toString()
+      configFile = JSON.parse(rawText)
+    } catch (e) {
+      return this.log(this.format(Hook.log.preCommitConfig, e.message), 1)
+    }
 
-    if (typeof preCommitConfig === 'object' && !Array.isArray(preCommitConfig)) {
-      this.configFile = preCommitConfig
+    if (typeof configFile === 'object' && !Array.isArray(configFile)) {
+      this.configFile = configFile
     }
   }
 
@@ -292,6 +294,14 @@ Hook.log = {
 
   json: [
     'Received an error while parsing or locating the `package.json` file:',
+    '',
+    '  %s',
+    '',
+    'Skipping the pre-commit hook.'
+  ].join('\n'),
+
+  preCommitConfig: [
+    'Received an error while parsing or locating the `.pre-commit.json` file:',
     '',
     '  %s',
     '',
