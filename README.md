@@ -113,6 +113,23 @@ or as `"pre-commit.{key}` key properties in the `package.json`:
 }
 ```
 
+Configuration can also be defined inside a standalone `.pre-commit.json` config file:
+
+```js
+{
+  "silent": true,
+  "colors": true,
+  "template": "./temp",
+  "run": [
+    "lint",
+    "test"
+  ]
+}
+```
+
+The contents of `.pre-commit.json` will be used in the place of whatever was defined in the `pre-commit` 
+or `precommit` property inside `package.json`.
+
 It's all the same. Different styles so use what matches your project. To learn
 more about the scripts, please read the official `npm` documentation:
 
