@@ -7,7 +7,7 @@ const fs = require('fs')
 const path = require('path')
 const os = require('os')
 const hook = path.join(__dirname, 'hook')
-const root = path.resolve(__dirname, '..', '..')
+const root = path.resolve(__dirname, '..', '..', '..')
 const exists = fs.existsSync || path.existsSync
 
 //

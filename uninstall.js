@@ -3,7 +3,7 @@
 const fs = require('fs')
 const path = require('path')
 const exists = fs.existsSync || path.existsSync
-const root = path.resolve(__dirname, '..', '..')
+const root = path.resolve(__dirname, '..', '..', '..')
 let git = path.resolve(root, '.git')
 
 //
