@@ -25,7 +25,7 @@ let precommit
 function getGitFolderPath (currentPath) {
   const git = path.resolve(currentPath, '.git')
 
-  if (!exists(git) || !fs.lstatSync(git).isDirectory()) {
+  if (!exists(git)) {
     console.log('pre-commit:')
     console.log('pre-commit: Not found .git folder in', git)
 
@@ -39,8 +39,10 @@ function getGitFolderPath (currentPath) {
     return getGitFolderPath(newPath)
   }
 
-  console.log('pre-commit:')
-  console.log('pre-commit: Found .git folder in', git)
+  if (fs.lstatSync(git).isDirectory()) {
+    console.log('pre-commit:')
+    console.log('pre-commit: Found .git folder in', git)
+  }
   return git
 }
 
@@ -56,6 +58,10 @@ if (exists(git) && fs.lstatSync(git).isFile()) {
     git = path.resolve(root, gitdir)
     hooks = path.resolve(git, 'hooks')
     precommit = path.resolve(hooks, 'pre-commit')
+    console.log('pre-commit:')
+    console.log('pre-commit: Found .git folder in', git)
+  } else {
+    console.log('pre-commit: Not found .git folder in', git)
   }
 }
 
