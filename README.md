@@ -14,7 +14,7 @@ It's advised to install the **@fastify/pre-commit** module as a `devDependencies
 module simply run:
 
 ```
-npm install --save-dev @fastify/pre-commit
+npm i -D @fastify/pre-commit
 ```
 
 To install it as `devDependency`. When this module is installed it will override
