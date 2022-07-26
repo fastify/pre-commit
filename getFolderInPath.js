@@ -2,7 +2,7 @@
 const fs = require('fs')
 const path = require('path')
 const resolve = path.resolve
-const exists = fs.existsSync
+const exists = path.existsSync || fs.existsSync
 
 // Function to recursively finding a folder
 function getFolderInPath (folder, path) {
