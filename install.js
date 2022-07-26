@@ -8,7 +8,7 @@ const path = require('path')
 const os = require('os')
 const hook = path.join(__dirname, 'hook')
 const root = path.resolve(__dirname, '..', '..', '..')
-const getFolderInPath = require('./getFolderInPath')
+const getFolderInPath = require('./get-folder-in-path')
 const exists = fs.existsSync || path.existsSync
 
 //
