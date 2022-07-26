@@ -9,7 +9,7 @@
     "install": "node install.js",
     "unit": "tap test.js",
     "lint": "standard",
-    "test": "npm run lint && npm run unit",
+    "test": "npm run unit",
     "uninstall": "node uninstall.js"
   },
   "repository": {
