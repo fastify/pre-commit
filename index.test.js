@@ -3,9 +3,6 @@ const Hook = require('.')
 const t = require('tap')
 const tty = require('tty')
 const ttySupportColor = tty.isatty(process.stdout.fd)
-const resolve = require('path').resolve
-const normalize = require('path').normalize
-const getFolderInPath = require('./lib/get-folder-in-path')
 
 const proxyquire = require('proxyquire')
 
@@ -331,45 +328,5 @@ t.test('pre-commit', function (t) {
       hook.config.run = ['example-fail']
       hook.run()
     })
-  })
-})
-
-t.test('getFolderInPath', function (t) {
-  t.plan(6)
-
-  t.test('target folder is in root', function (t) {
-    t.plan(1)
-    const path = getFolderInPath('target_git', resolve(__dirname, 'testfolders/root'))
-    t.ok(path.endsWith(normalize('testfolders/root/target_git')))
-  })
-
-  t.test('test folder is in submodule', function (t) {
-    t.plan(1)
-    const path = getFolderInPath('target_git', resolve(__dirname, 'testfolders/submodule/moduleA'))
-    t.ok(path.endsWith(normalize('testfolders/submodule/moduleA/target_git')))
-  })
-
-  t.test('test folder is in submodule', function (t) {
-    t.plan(1)
-    const path = getFolderInPath('target_git', resolve(__dirname, 'testfolders/recursive/root/sub'))
-    t.ok(path.endsWith(normalize('testfolders/recursive/root/target_git')))
-  })
-
-  t.test('folder is root', function (t) {
-    t.plan(1)
-    const path = getFolderInPath('super-special-folder-which-should-never-be-found', '/')
-    t.same(path, null)
-  })
-
-  t.test('folder is empty', function (t) {
-    t.plan(1)
-    const path = getFolderInPath('target_git', resolve(__dirname, 'testfolders/empty'))
-    t.same(path, null)
-  })
-
-  t.test('folder is empty', function (t) {
-    t.plan(1)
-    const path = getFolderInPath('target_git', resolve(__dirname, 'testfolders/file/module/sub'))
-    t.same(path, null)
   })
 })

@@ -18,7 +18,7 @@ const exists = fs.existsSync || path.existsSync
 // to work correctly.
 //
 
-let git = getFolderInPath('.git', root)
+let git = getFolderInPath('.git', root, console)
 let hooks
 let precommit
 

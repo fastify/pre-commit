@@ -7,7 +7,7 @@
     "example-fail": "echo \"This is the example hook, I exit with 1\" && exit 1",
     "example-pass": "echo \"This is the example hook, I exit with 0\" && exit 0",
     "install": "node install.js",
-    "unit": "tap index.test.js",
+    "unit": "tap",
     "lint": "standard",
     "test": "npm run unit",
     "uninstall": "node uninstall.js"
