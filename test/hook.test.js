@@ -1,6 +1,6 @@
 'use strict'
+const Hook = require('..')
 const t = require('tap')
-const Hook = require('./')
 const tty = require('tty')
 const ttySupportColor = tty.isatty(process.stdout.fd)
 
@@ -146,7 +146,7 @@ t.test('pre-commit', function (t) {
     t.test('overrides the `pre-commit` config property in package.json with the config inside `.pre-commit.json` if it exists', function (t) {
       t.plan(1)
 
-      const Hook = proxyquire('.', {
+      const Hook = proxyquire('..', {
         fs: {
           existsSync () {
             return true
@@ -167,7 +167,7 @@ t.test('pre-commit', function (t) {
     t.test('should properly handle errors while trying to read and parse the contents of `.pre-commit.json`', function (t) {
       t.plan(4)
 
-      let Hook = proxyquire('.', {
+      let Hook = proxyquire('..', {
         fs: {
           existsSync () {
             return true
@@ -180,7 +180,7 @@ t.test('pre-commit', function (t) {
 
       hook = new Hook(exit)
 
-      Hook = proxyquire('.', {
+      Hook = proxyquire('..', {
         fs: {
           existsSync () { return true },
           readFileSync () {
