@@ -1,6 +1,6 @@
 'use strict'
+const Hook = require('.')
 const t = require('tap')
-const Hook = require('./')
 const tty = require('tty')
 const ttySupportColor = tty.isatty(process.stdout.fd)
 
