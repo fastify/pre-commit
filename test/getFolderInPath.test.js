@@ -7,20 +7,20 @@ t.test('getFolderInPath', function (t) {
 
   t.test('target folder is in root', function (t) {
     t.plan(1)
-    const path = getFolderInPath('target', resolve(__dirname, 'testfolders/root'))
-    t.ok(path.endsWith('testfolders/root/target'))
+    const path = getFolderInPath('target_git', resolve(__dirname, 'testfolders/root'))
+    t.ok(path.endsWith('testfolders/root/target_git'))
   })
 
   t.test('test folder is in submodule', function (t) {
     t.plan(1)
-    const path = getFolderInPath('target', resolve(__dirname, 'testfolders/submodule/moduleA'))
-    t.ok(path.endsWith('testfolders/submodule/moduleA/target'))
+    const path = getFolderInPath('target_git', resolve(__dirname, 'testfolders/submodule/moduleA'))
+    t.ok(path.endsWith('testfolders/submodule/moduleA/target_git'))
   })
 
   t.test('test folder is in submodule', function (t) {
     t.plan(1)
-    const path = getFolderInPath('target', resolve(__dirname, 'testfolders/recursive/root/sub'))
-    t.ok(path.endsWith('testfolders/recursive/root/target'))
+    const path = getFolderInPath('target_git', resolve(__dirname, 'testfolders/recursive/root/sub'))
+    t.ok(path.endsWith('testfolders/recursive/root/target_git'))
   })
 
   t.test('folder is root', function (t) {
@@ -31,13 +31,13 @@ t.test('getFolderInPath', function (t) {
 
   t.test('folder is empty', function (t) {
     t.plan(1)
-    const path = getFolderInPath('target', resolve(__dirname, 'testfolders/empty'))
+    const path = getFolderInPath('target_git', resolve(__dirname, 'testfolders/empty'))
     t.same(path, null)
   })
 
   t.test('folder is empty', function (t) {
     t.plan(1)
-    const path = getFolderInPath('target', resolve(__dirname, 'testfolders/file/module/sub'))
+    const path = getFolderInPath('target_git', resolve(__dirname, 'testfolders/file/module/sub'))
     t.same(path, null)
   })
 })
