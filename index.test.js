@@ -5,7 +5,7 @@ const tty = require('tty')
 const ttySupportColor = tty.isatty(process.stdout.fd)
 const resolve = require('path').resolve
 const normalize = require('path').normalize
-const getFolderInPath = require('./get-folder-in-path')
+const getFolderInPath = require('./lib/get-folder-in-path')
 
 const proxyquire = require('proxyquire')
 
