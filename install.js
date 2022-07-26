@@ -8,6 +8,7 @@ const path = require('path')
 const os = require('os')
 const hook = path.join(__dirname, 'hook')
 const root = path.resolve(__dirname, '..', '..', '..')
+const getFolderInPath = require('./getFolderInPath')
 const exists = fs.existsSync || path.existsSync
 
 //
@@ -17,32 +18,9 @@ const exists = fs.existsSync || path.existsSync
 // to work correctly.
 //
 
-let git = getGitFolderPath(root)
+let git = getFolderInPath('.git', root)
 let hooks
 let precommit
-
-// Function to recursively finding .git folder
-function getGitFolderPath (currentPath) {
-  const git = path.resolve(currentPath, '.git')
-
-  if (!exists(git) || !fs.lstatSync(git).isDirectory()) {
-    console.log('pre-commit:')
-    console.log('pre-commit: Not found .git folder in', git)
-
-    const newPath = path.resolve(currentPath, '..')
-
-    // Stop if we on top folder
-    if (currentPath === newPath) {
-      return null
-    }
-
-    return getGitFolderPath(newPath)
-  }
-
-  console.log('pre-commit:')
-  console.log('pre-commit: Found .git folder in', git)
-  return git
-}
 
 //
 // Resolve git directory for submodules
