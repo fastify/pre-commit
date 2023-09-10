@@ -147,7 +147,7 @@ t.test('pre-commit', function (t) {
       t.plan(1)
 
       const Hook = proxyquire('.', {
-        fs: {
+        'node:fs': {
           existsSync () {
             return true
           },
@@ -168,7 +168,7 @@ t.test('pre-commit', function (t) {
       t.plan(4)
 
       let Hook = proxyquire('.', {
-        fs: {
+        'node:fs': {
           existsSync () {
             return true
           },
@@ -181,7 +181,7 @@ t.test('pre-commit', function (t) {
       hook = new Hook(exit)
 
       Hook = proxyquire('.', {
-        fs: {
+        'node:fs': {
           existsSync () { return true },
           readFileSync () {
             return Buffer.from('{ "bad": [json }')
