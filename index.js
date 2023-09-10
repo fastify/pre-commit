@@ -2,11 +2,11 @@
 
 const spawn = require('cross-spawn')
 const which = require('which')
-const path = require('path')
-const util = require('util')
-const tty = require('tty')
+const path = require('node:path')
+const util = require('node:util')
+const tty = require('node:tty')
 
-const fs = require('fs')
+const fs = require('node:fs')
 
 /**
  * Representation of a hook runner.

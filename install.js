@@ -3,9 +3,9 @@
 //
 // Compatibility with older node.js as path.exists got moved to `fs`.
 //
-const fs = require('fs')
-const path = require('path')
-const os = require('os')
+const fs = require('node:fs')
+const path = require('node:path')
+const os = require('node:os')
 const hook = path.join(__dirname, 'hook')
 const root = path.resolve(__dirname, '..', '..', '..')
 const exists = fs.existsSync || path.existsSync

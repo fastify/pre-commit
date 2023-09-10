@@ -1,7 +1,7 @@
 'use strict'
 const t = require('tap')
 const Hook = require('./')
-const tty = require('tty')
+const tty = require('node:tty')
 const ttySupportColor = tty.isatty(process.stdout.fd)
 
 const proxyquire = require('proxyquire')

@@ -1,7 +1,7 @@
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
+const fs = require('node:fs')
+const path = require('node:path')
 const exists = fs.existsSync || path.existsSync
 const root = path.resolve(__dirname, '..', '..', '..')
 let git = path.resolve(root, '.git')
