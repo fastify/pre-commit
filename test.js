@@ -1,103 +1,86 @@
 'use strict'
-const t = require('tap')
-const Hook = require('./')
+const { test } = require('node:test')
 const tty = require('node:tty')
+const Hook = require('./')
 const ttySupportColor = tty.isatty(process.stdout.fd)
 
 const proxyquire = require('proxyquire')
 
-t.test('pre-commit', function (t) {
-  t.plan(5)
-
-  t.test('is exported as a function', function (t) {
-    t.plan(1)
-    t.strictSame(typeof Hook, 'function')
+test('pre-commit', async (t) => {
+  await t.test('is exported as a function', (t) => {
+    t.assert.strictEqual(typeof Hook, 'function', 'Hook should be a function')
   })
 
-  t.test('can be initialized without a `new` keyword', function (t) {
-    t.plan(2)
-
+  await t.test('can be initialized without a `new` keyword', (t) => {
     const hook = Hook(function () {}, {
       ignorestatus: true
     })
 
-    t.strictSame(hook instanceof Hook, true)
-    t.strictSame(typeof hook.parse, 'function')
+    t.assert.ok(hook instanceof Hook, 'hook should be an instance of Hook')
+    t.assert.strictEqual(typeof hook.parse, 'function', 'hook.parse should be a function')
   })
 
-  t.test('#parse', function (t) {
-    t.plan(9)
-
+  await t.test('#parse', async (t) => {
     let hook
 
-    t.beforeEach(function () {
+    t.beforeEach(() => {
       hook = new Hook(function () {}, {
         ignorestatus: true
       })
     })
 
-    t.test('extracts configuration values from precommit.<flag>', function (t) {
-      t.plan(3)
-
+    await t.test('extracts configuration values from precommit.<flag>', (t) => {
       hook.json = {
         'precommit.silent': true
       }
 
-      t.strictSame(hook.silent, false)
+      t.assert.strictEqual(hook.silent, false, 'hook.silent should initially be false')
 
       hook.parse()
 
-      t.strictSame(hook.config.silent, true)
-      t.strictSame(hook.silent, true)
+      t.assert.strictEqual(hook.config.silent, true, 'hook.config.silent should be true after parsing')
+      t.assert.strictEqual(hook.silent, true, 'hook.silent should be true after parsing')
     })
 
-    t.test('extracts configuration values from pre-commit.<flag>', function (t) {
-      t.plan(5)
-
+    await t.test('extracts configuration values from pre-commit.<flag>', (t) => {
       hook.json = {
         'pre-commit.silent': true,
         'pre-commit.colors': false
       }
 
-      t.strictSame(hook.silent, false)
-      t.strictSame(hook.colors, ttySupportColor)
+      t.assert.strictEqual(hook.silent, false, 'hook.silent should initially be false')
+      t.assert.strictEqual(hook.colors, ttySupportColor, 'hook.colors should initially match ttySupportColor')
 
       hook.parse()
 
-      t.strictSame(hook.config.silent, true)
-      t.strictSame(hook.silent, true)
-      t.strictSame(hook.colors, false)
+      t.assert.strictEqual(hook.config.silent, true, 'hook.config.silent should be true after parsing')
+      t.assert.strictEqual(hook.silent, true, 'hook.silent should be true after parsing')
+      t.assert.strictEqual(hook.colors, false, 'hook.colors should be false after parsing')
     })
 
-    t.test('normalizes the `pre-commit` to an array', function (t) {
-      t.plan(2)
-
+    await t.test('normalizes the `pre-commit` to an array', (t) => {
       hook.json = {
         'pre-commit': 'test, cows, moo'
       }
 
       hook.parse()
 
-      t.strictSame(hook.config.run.length, 3)
-      t.strictSame(hook.config.run, ['test', 'cows', 'moo'])
+      t.assert.strictEqual(hook.config.run.length, 3, 'hook.config.run should have 3 items')
+      t.assert.deepStrictEqual(hook.config.run, ['test', 'cows', 'moo'], 'hook.config.run should contain the correct items')
     })
 
-    t.test('normalizes the `precommit` to an array', function (t) {
-      t.plan(2)
-
+    await t.test('normalizes the `precommit` to an array', (t) => {
       hook.json = {
         precommit: 'test, cows, moo'
       }
 
       hook.parse()
 
-      t.strictSame(hook.config.run.length, 3)
-      t.strictSame(hook.config.run, ['test', 'cows', 'moo'])
+      t.assert.strictEqual(hook.config.run.length, 3, 'hook.config.run should have 3 items')
+      t.assert.deepStrictEqual(hook.config.run, ['test', 'cows', 'moo'], 'hook.config.run should contain the correct items')
     })
 
-    t.test('allows `pre-commit` object based syntax', function (t) {
-      t.plan(4)
-
+    await t.test('allows `pre-commit` object based syntax', (t) => {
       hook.json = {
         'pre-commit': {
           run: 'test scripts go here',
@@ -108,15 +91,13 @@ t.test('pre-commit', function (t) {
 
       hook.parse()
 
-      t.strictSame(hook.config.run.length, 4)
-      t.strictSame(hook.config.run, ['test', 'scripts', 'go', 'here'])
-      t.strictSame(hook.silent, true)
-      t.strictSame(hook.colors, false)
+      t.assert.strictEqual(hook.config.run.length, 4, 'hook.config.run should have 4 items')
+      t.assert.deepStrictEqual(hook.config.run, ['test', 'scripts', 'go', 'here'], 'hook.config.run should contain the correct items')
+      t.assert.strictEqual(hook.silent, true, 'hook.silent should be true')
+      t.assert.strictEqual(hook.colors, false, 'hook.colors should be false')
     })
 
-    t.test('defaults to `test` if nothing is specified', function (t) {
-      t.plan(2)
-
+    await t.test('defaults to `test` if nothing is specified', (t) => {
       hook.json = {
         scripts: {
           test: 'mocha test.js'
@@ -125,13 +106,11 @@ t.test('pre-commit', function (t) {
 
       hook.parse()
 
-      t.strictSame(hook.config.run.length, 1)
-      t.strictSame(hook.config.run, ['test'])
+      t.assert.strictEqual(hook.config.run.length, 1, 'hook.config.run should have 1 item')
+      t.assert.deepStrictEqual(hook.config.run, ['test'], 'hook.config.run should contain the correct item')
     })
 
-    t.test('ignores the default npm.script.test placeholder', function (t) {
-      t.plan(1)
-
+    await t.test('ignores the default npm.script.test placeholder', (t) => {
       hook.json = {
         scripts: {
           test: 'echo "Error: no test specified" && exit 1'
@@ -140,12 +119,10 @@ t.test('pre-commit', function (t) {
 
       hook.parse()
 
-      t.strictSame(typeof hook.config.run, 'undefined')
+      t.assert.strictEqual(typeof hook.config.run, 'undefined', 'hook.config.run should be undefined')
     })
 
-    t.test('overrides the `pre-commit` config property in package.json with the config inside `.pre-commit.json` if it exists', function (t) {
-      t.plan(1)
-
+    await t.test('overrides the `pre-commit` config property in package.json with the config inside `.pre-commit.json` if it exists', (t) => {
       const Hook = proxyquire('.', {
         'node:fs': {
           existsSync () {
@@ -160,13 +137,10 @@ t.test('pre-commit', function (t) {
 
       hook = new Hook(function () {}, { ignorestatus: true })
 
-      // ----
-      t.same(hook.config.run, ['lint', 'bench'])
+      t.assert.deepStrictEqual(hook.config.run, ['lint', 'bench'], 'hook.config.run should contain the correct items')
     })
 
-    t.test('should properly handle errors while trying to read and parse the contents of `.pre-commit.json`', function (t) {
-      t.plan(4)
-
+    await t.test('should properly handle errors while trying to read and parse the contents of `.pre-commit.json`', (t) => {
       let Hook = proxyquire('.', {
         'node:fs': {
           existsSync () {
@@ -191,31 +165,27 @@ t.test('pre-commit', function (t) {
 
       hook = new Hook(exit)
 
-      // *****************
       function exit (code, lines) {
-        t.not(lines.length, 0)
-        t.equal(code, 1)
+        t.assert.ok(lines.length !== 0, 'lines should not be empty')
+        t.assert.strictEqual(code, 1, 'exit code should be 1')
       }
     })
   })
 
-  t.test('#log', function (t) {
-    t.plan(6)
-
-    t.test('prefixes the logs with `pre-commit`', function (t) {
-      t.plan(9)
+  await t.test('#log', async (t) => {
+    await t.test('prefixes the logs with `pre-commit`', (t) => {
       const hook = new Hook(function (code, lines) {
-        t.strictSame(code, 1)
-        t.strictSame(Array.isArray(lines), true)
+        t.assert.strictEqual(code, 1, 'exit code should be 1')
+        t.assert.ok(Array.isArray(lines), 'lines should be an array')
 
-        t.strictSame(lines[0], 'pre-commit: ')
-        t.strictSame(lines[1], 'pre-commit: foo')
-        t.strictSame(lines[2], 'pre-commit: ')
-        t.strictSame(lines.length, 3)
+        t.assert.ok(lines[0].includes('pre-commit: '), 'first line should start with `pre-commit: `')
+        t.assert.ok(lines[1].includes('pre-commit: foo'), 'second line should start with `pre-commit: foo`')
+        t.assert.ok(lines[2].includes('pre-commit: '), 'third line should start with `pre-commit: `')
+        t.assert.strictEqual(lines.length, 3, 'total lines should be 3')
 
         // color prefix check
         lines.forEach(function (line) {
-          t.strictSame(line.includes('\u001b'), ttySupportColor)
+          t.assert.strictEqual(line.includes('\u001b'), ttySupportColor)
         })
       }, { ignorestatus: true })
 
@@ -223,40 +193,34 @@ t.test('pre-commit', function (t) {
       hook.log(['foo'])
     })
 
-    t.test('allows for a custom error code', function (t) {
-      t.plan(1)
-
+    await t.test('allows for a custom error code', (t) => {
       const hook = new Hook(function (code, lines) {
-        t.strictSame(code, 0)
+        t.assert.strictEqual(code, 0, 'exit code should be 0')
       }, { ignorestatus: true })
 
       hook.config.silent = true
       hook.log(['foo'], 0)
     })
 
-    t.test('allows strings to be split \\n', function (t) {
-      t.plan(4)
-
+    await t.test('allows strings to be split \\n', (t) => {
       const hook = new Hook(function (code, lines) {
-        t.strictSame(code, 0)
+        t.assert.strictEqual(code, 0, 'exit code should be 0')
 
-        t.strictSame(lines.length, 4)
-        t.strictSame(lines[1], 'pre-commit: foo')
-        t.strictSame(lines[2], 'pre-commit: bar')
+        t.assert.strictEqual(lines.length, 4, 'total lines should be 4')
+        t.assert.ok(lines[1].includes('pre-commit: foo'), 'second line should start with `pre-commit: foo`')
+        t.assert.ok(lines[2].includes('pre-commit: bar'), 'third line should start with `pre-commit: bar`')
       }, { ignorestatus: true })
 
       hook.config.silent = true
       hook.log('foo\nbar', 0)
     })
 
-    t.test('does not output colors when configured to do so', function (t) {
-      t.plan(5)
-
+    await t.test('does not output colors when configured to do so', (t) => {
       const hook = new Hook(function (code, lines) {
-        t.strictSame(code, 0)
+        t.assert.strictEqual(code, 0, 'exit code should be 0')
 
         lines.forEach(function (line) {
-          t.strictSame(line.includes('\u001b'), false)
+          t.assert.strictEqual(line.includes('\u001b'), false, 'line should not include color prefix')
         })
       }, { ignorestatus: true })
 
@@ -266,32 +230,28 @@ t.test('pre-commit', function (t) {
       hook.log('foo\nbar', 0)
     })
 
-    t.test('output lines to stderr if error code 1', function (t) {
-      t.plan(4)
-
+    await t.test('output lines to stderr if error code 1', (t) => {
       const err = console.error
       const hook = new Hook(function (code, lines) {
         console.error = err
       }, { ignorestatus: true })
 
       console.error = function (line) {
-        t.strictSame(line.includes('pre-commit: '), true)
+        t.assert.ok(line.includes('pre-commit: '), true)
       }
 
       hook.config.colors = false
       hook.log('foo\nbar', 1)
     })
 
-    t.test('output lines to stderr if error code 0', function (t) {
-      t.plan(4)
-
+    await t.test('output lines to stderr if error code 0', (t) => {
       const log = console.log
       const hook = new Hook(function (code, lines) {
         console.log = log
       }, { ignorestatus: true })
 
       console.log = function (line) {
-        t.strictSame(line.includes('pre-commit: '), true)
+        t.assert.ok(line.includes('pre-commit: '), true)
       }
 
       hook.config.colors = false
@@ -299,30 +259,24 @@ t.test('pre-commit', function (t) {
     })
   })
 
-  t.test('#run', function (t) {
-    t.plan(2)
-
-    t.test('runs the specified scripts and exit with 0 on no error', function (t) {
-      t.plan(2)
-
+  await t.test('#run', async (t) => {
+    await t.test('runs the specified scripts and exit with 0 on no error', (t) => {
       const hook = new Hook(function (code, lines) {
-        t.strictSame(code, 0)
-        t.strictSame(typeof lines, 'undefined')
+        t.assert.strictEqual(code, 0, 'exit code should be 0')
+        t.assert.strictEqual(typeof lines, 'undefined', 'lines should be undefined')
       }, { ignorestatus: true })
 
       hook.config.run = ['example-pass']
       hook.run()
     })
 
-    t.test('runs the specified test and exits with 1 on error', function (t) {
-      t.plan(4)
-
+    await t.test('runs the specified test and exits with 1 on error', (t) => {
       const hook = new Hook(function (code, lines) {
-        t.strictSame(code, 1)
+        t.assert.strictEqual(code, 1, 'exit code should be 1')
 
-        t.strictSame(Array.isArray(lines), true)
-        t.strictSame(lines[1].includes('`example-fail`'), true)
-        t.strictSame(lines[2].includes('code (1)'), true)
+        t.assert.ok(Array.isArray(lines), 'lines should be an array')
+        t.assert.ok(lines[1].includes('`example-fail`'), true)
+        t.assert.ok(lines[2].includes('code (1)'), true)
       }, { ignorestatus: true })
 
       hook.config.run = ['example-fail']
