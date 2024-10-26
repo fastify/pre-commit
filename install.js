@@ -103,6 +103,10 @@ if (os.platform() === 'win32') {
 }
 
 const precommitContent = '#!/usr/bin/env bash' + os.EOL +
+  'if git diff --cached --quiet; then' + os.EOL +
+  '  echo "No staged changes detected, skipping pre-commit hook."' + os.EOL +
+  '  exit 0' + os.EOL +
+  'fi' + os.EOL +
   hookRelativeUnixPath + os.EOL +
   'RESULT=$?' + os.EOL +
   '[ $RESULT -ne 0 ] && exit 1' + os.EOL +

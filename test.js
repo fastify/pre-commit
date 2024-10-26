@@ -283,4 +283,27 @@ test('pre-commit', async (t) => {
       hook.run()
     })
   })
+
+  await t.test('skips pre-commit if no staged changes', (t) => {
+    const Hook = proxyquire('.', {
+      'node:child_process': {
+        execSync (command) {
+          if (command === 'git diff --cached --quiet') {
+            throw new Error('No staged changes')
+          }
+        }
+      }
+    })
+
+    const hook = new Hook(
+      function (code, lines) {
+        t.assert.strictEqual(code, 0, 'exit code should be 0')
+        t.assert.strictEqual(lines, undefined, 'lines should be undefined')
+      },
+      { ignorestatus: true }
+    )
+
+    hook.config.run = ['example-pass']
+    hook.run()
+  })
 })
