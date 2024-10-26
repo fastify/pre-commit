@@ -1,6 +1,6 @@
 {
   "name": "@fastify/pre-commit",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Automatically install pre-commit hooks for your npm modules.",
   "main": "index.js",
   "type": "commonjs",
