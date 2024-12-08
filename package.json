@@ -9,7 +9,8 @@
     "example-pass": "echo \"This is the example hook, I exit with 0\" && exit 0",
     "install": "node install.js",
     "unit": "c8 node --test",
-    "lint": "standard",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "test": "npm run unit",
     "uninstall": "node uninstall.js"
   },
@@ -45,8 +46,8 @@
   },
   "devDependencies": {
     "c8": "^10.1.2",
+    "neostandard": "^0.11.9",
     "pre-commit": "git+https://git@github.com/fastify/pre-commit.git",
-    "proxyquire": "^2.1.3",
-    "standard": "^17.1.0"
+    "proxyquire": "^2.1.3"
   }
 }
