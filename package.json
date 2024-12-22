@@ -31,14 +31,37 @@
     "test",
     "development"
   ],
+  "author": "Arnout Kazemier <opensource@observe.it>",
   "contributors": [
     {
-      "name": "Arnout Kazemier",
-      "email": "opensource@observe.it",
-      "originalAuthor": true
+      "name": "Matteo Collina",
+      "email": "hello@matteocollina.com"
+    },
+    {
+      "name": "Aras Abbasi",
+      "email": "aras.abbasi@gmail.com"
+    },
+    {
+      "name": "James Sumners",
+      "url": "https://james.sumners.info"
+    },
+    {
+      "name": "Frazer Smith",
+      "email": "frazer.dev@icloud.com",
+      "url": "https://github.com/fdawgs"
     }
   ],
   "homepage": "https://github.com/fastify/pre-commit",
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/fastify"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fastify"
+    }
+  ],
   "license": "MIT",
   "dependencies": {
     "cross-spawn": "^7.0.3",
