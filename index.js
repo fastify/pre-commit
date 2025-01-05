@@ -153,7 +153,7 @@ Hook.prototype.log = function log (lines, exit) {
  */
 Hook.prototype.initialize = function initialize () {
   ['git', 'npm'].forEach(function each (binary) {
-    try { this[binary] = which.sync(binary) } catch (e) {}
+    try { this[binary] = which.sync(binary) } catch {}
   }, this)
 
   //
@@ -164,7 +164,7 @@ Hook.prototype.initialize = function initialize () {
     try {
       process.env.PATH += path.delimiter + path.dirname(process.env._)
       this.npm = which.sync('npm')
-    } catch (e) {
+    } catch {
       return this.log(this.format(Hook.log.binary, 'npm'), 0)
     }
   }

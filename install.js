@@ -91,7 +91,7 @@ if (exists(precommit) && !fs.lstatSync(precommit).isSymbolicLink()) {
 // We cannot create a symlink over an existing file so make sure it's gone and
 // finish the installation process.
 //
-try { fs.unlinkSync(precommit) } catch (e) {}
+try { fs.unlinkSync(precommit) } catch {}
 
 // Create generic precommit hook that launches this modules hook (as well
 // as stashing - unstashing the unstaged changes)
