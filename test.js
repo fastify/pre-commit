@@ -194,7 +194,7 @@ test('pre-commit', async (t) => {
     })
 
     await t.test('allows for a custom error code', (t) => {
-      const hook = new Hook(function (code, lines) {
+      const hook = new Hook(function (code) {
         t.assert.strictEqual(code, 0, 'exit code should be 0')
       }, { ignorestatus: true })
 
@@ -232,7 +232,7 @@ test('pre-commit', async (t) => {
 
     await t.test('output lines to stderr if error code 1', (t) => {
       const err = console.error
-      const hook = new Hook(function (code, lines) {
+      const hook = new Hook(function () {
         console.error = err
       }, { ignorestatus: true })
 
@@ -246,7 +246,7 @@ test('pre-commit', async (t) => {
 
     await t.test('output lines to stderr if error code 0', (t) => {
       const log = console.log
-      const hook = new Hook(function (code, lines) {
+      const hook = new Hook(function () {
         console.log = log
       }, { ignorestatus: true })
 
