@@ -2,7 +2,7 @@
 
 **@fastify/pre-commit** is a pre-commit hook installer for `git`. It will ensure that
 your `npm test` (or other specified scripts) passes before you can commit your
-changes. This all conveniently configured in your `package.json`.
+changes. This is all conveniently configured in your `package.json`.
 
 But don't worry, you can still force a commit by telling `git` to skip the
 `pre-commit` hooks by simply committing using `--no-verify`.
@@ -38,7 +38,7 @@ could ensure that:
 - Contribution licenses signed etc.
 
 The only thing you need to do is add a `pre-commit` array to your `package.json`
-that specifies which scripts you want to have ran and in which order:
+that specifies which scripts you want to run and in which order:
 
 ```js
 {
@@ -59,8 +59,8 @@ that specifies which scripts you want to have ran and in which order:
 }
 ```
 
-In the example above, it will first run: `npm run foo` then `npm run bar` and
-finally `npm run test` which will make the commit fail as it returns the error
+In the example above, it will first run: `npm run foo` then `npm run bar`, and
+finally, `npm run test` which will make the commit fail as it returns the error
 code `1`.  If you prefer strings over arrays or `precommit` without a middle
 dash, that also works:
 
@@ -86,12 +86,12 @@ dash, that also works:
 ```
 
 The examples above are all the same. In addition to configuring which scripts
-should be ran you can also configure the following options:
+should be run you can also configure the following options:
 
 - **silent** Don't output the prefixed `pre-commit:` messages when things fail
   or when we have nothing to run. Should be a boolean.
 - **colors** Don't output colors when we write messages. Should be a boolean.
-- **template** Path to a file who's content should be used as template for the
+- **template** Path to a file whose content should be used as a template for the
   git commit body.
 
 These options can either be added in the `pre-commit`/`precommit` object as keys
@@ -120,10 +120,10 @@ Configuration can also be defined inside a standalone `.pre-commit.json` config 
 }
 ```
 
-The contents of `.pre-commit.json` will be used in the place of whatever was defined in the `pre-commit`
+The contents of `.pre-commit.json` will be used in place of whatever was defined in the `pre-commit`
 or `precommit` property inside `package.json`.
 
-It's all the same. Different styles so use what matches your project. To learn
+It is all the same. Different styles so use what matches your project. To learn
 more about the scripts, please read the official `npm` documentation:
 
 https://docs.npmjs.com/misc/scripts
@@ -132,9 +132,9 @@ And to learn more about git hooks read:
 
 http://githooks.com
 
-### License
+## License
 
-MIT
+Licensed under [MIT](./LICENSE).
 
 ### Attribution
 
