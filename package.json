@@ -68,7 +68,7 @@
     "which": "^6.0.0"
   },
   "devDependencies": {
-    "c8": "^10.1.2",
+    "c8": "^11.0.0",
     "eslint": "^9.17.0",
     "neostandard": "^0.12.0",
     "pre-commit": "git+https://git@github.com/fastify/pre-commit.git",
