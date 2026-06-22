@@ -130,7 +130,7 @@ https://docs.npmjs.com/misc/scripts
 
 And to learn more about git hooks read:
 
-http://githooks.com
+https://githooks.com
 
 ## License
 
