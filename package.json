@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/fastify/pre-commit.git"
+    "url": "git+https://github.com/fastify/pre-commit.git"
   },
   "bugs": {
     "url": "https://github.com/fastify/pre-commit/issues"
