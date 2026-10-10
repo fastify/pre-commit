@@ -125,9 +125,9 @@ try { fs.writeFileSync(precommit, precommitContent) } catch (e) {
   console.error('pre-commit:')
 }
 
-try { fs.chmodSync(precommit, '777') } catch (e) {
+try { fs.chmodSync(precommit, '775') } catch (e) {
   console.error('pre-commit:')
-  console.error('pre-commit: chmod 0777 the pre-commit file in your .git/hooks folder because:')
+  console.error('pre-commit: chmod 0775 the pre-commit file in your .git/hooks folder because:')
   console.error('pre-commit: ' + e.message)
   console.error('pre-commit:')
 }
